@@ -6,7 +6,7 @@ Back in 2016, I ordered a number of wireless temperature sensors and a single US
 What I have called the srd-bridge is in the original software called the MessageBridge, part of the LaunchPad. All of MessageBridge has been copied into this repository, and is as of early 2020 unchanged from the original repository. I've externalized the configuration file, so you can edit this even after building the image. Log files are also externalized.
 
 #### llap-mqtt-bridge
-A more developed version of [simpleUDPListen.py][https://github.com/WirelessThings/WirelessThings-LaunchPad/blob/master/Examples/Python%20CLI/simpleUDPListen.py] from the original software is included. Read and edit the settings to suit your environment. At this point the configuration is not externalized and so baked into the image you build below.
+A more developed version of [simpleUDPListen.py](https://github.com/WirelessThings/WirelessThings-LaunchPad/blob/master/Examples/Python%20CLI/simpleUDPListen.py) from the original software is included. Read and edit the settings to suit your environment. At this point the configuration is not externalized and so baked into the image you build below.
 
 ### Installation
 
