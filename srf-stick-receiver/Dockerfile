@@ -6,8 +6,8 @@ FROM python:2.7.17-buster
 
 RUN python -m pip install pyserial
 
-COPY MessageBridge /opt/srd-bridge
+COPY MessageBridge /opt/srf-stick-receiver
 COPY config /config
 COPY logs /logs
 
-CMD ["/opt/srd-bridge/MessageBridge.py"]
+CMD ["/opt/srd-stick-receiver/MessageBridge.py"]

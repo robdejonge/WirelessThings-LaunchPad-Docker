@@ -12,19 +12,27 @@ import socket
 import json
 import sqlite3
 import paho.mqtt.client as mqtt
+import shutil
 import inspect
 
 # init
 
 LLAP_PORT = 50140
 
-MQTT_BROKER = "10.0.1.200"
+MQTT_BROKER = "mqtt.lan"
 MQTT_PORT = 1883
 MQTT_KEEPALIVE_INTERVAL = 600
 TOPIC_BASE = "places/home/"
-LWT_TOPIC = "clients/llap-mqtt-bridge"
+LWT_TOPIC = "clients/llap-bridge"
 LWT_ALIVE = "1"
 LWT_DEAD = "0"
+
+if os.path.exists(path): 
+  print("Configuration file exists")
+else:
+  print("No configuration file, copying default settings")
+  
+
 
 sensorlocation = {
 	'AA' : 'winecellar',
@@ -38,11 +46,11 @@ sensorlocation = {
 # some functions
 
 def on_connect(mosq, obj, rc):
-    print "Connected to MQTT Broker"
+    print("Connected to MQTT Broker")
 
 def on_disconnect(client, userdata, rc):
     if rc != 0:
-	print("%s: Unexpected disconnection" % (time.strftime("%b %d %H:%M:%S")))
+        print("%s: Unexpected disconnection" % (time.strftime("%b %d %H:%M:%S")))
     print("%s: Reconnecting" & (time.strftime("%b %d %H:%M:%S")))
     mqttc.reconnect()
 
@@ -99,14 +107,14 @@ while True:
 
             temperature = '%s' % pydata['data'][0][-4:]
 
-	    print("%s: Publishing temperature reading for %s sensor: %s" % (time.strftime("%b %d %H:%M:%S", time.localtime()), str(sensor_location) ,str(temperature)))
+            print("%s: Publishing temperature reading for %s sensor: %s" % (time.strftime("%b %d %H:%M:%S", time.localtime()), str(sensor_location) ,str(temperature)))
             mqttc.publish(TOPIC_BASE + str(sensor_location) + "/temperature", str(temperature))
 
         if pydata['data'][0][:4] == "RHUM":
 
             relative_humidity = '%s' % pydata['data'][0][-4:]
 
-	    print("%s: Publishing relative humidity reading for %s sensor: %s" % (time.strftime("%b %d %H:%M:%S", time.localtime()), str(sensor_location) ,str(relative_humidity)))
+            print("%s: Publishing relative humidity reading for %s sensor: %s" % (time.strftime("%b %d %H:%M:%S", time.localtime()), str(sensor_location) ,str(relative_humidity)))
             mqttc.publish(TOPIC_BASE + str(sensor_location) + "/relative-humidity", str(relative_humidity))
 
         if pydata['data'][0][:4] == "BATT":
@@ -117,6 +125,6 @@ while True:
 
     else:
 
-	print("%s: Transmission does not contain an LLAP message, discarding" % (time.strftime("%b %d %H:%M:%S", time.localtime())))
+           print("%s: Transmission does not contain an LLAP message, discarding" % (time.strftime("%b %d %H:%M:%S", time.localtime())))
 
 mqttc.disconnect()

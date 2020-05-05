@@ -86,8 +86,9 @@ class MessageBridge():
 
     """
 
-    _configFileDefault = "/opt/local/srd-bridge/MessageBridge_defaults.cfg"
+    _configFileDefault = "/config/MessageBridge.cfg"
     _configFile = "/config/MessageBridge.cfg"
+    _configTemplate = "/opt/srf-stick-receiver/MessageBridge_template.cfg"
     _pidFile = None
     _pidFilePath = None
     _pidFileName = None
@@ -470,6 +471,7 @@ is running then run in the current terminal
 
         if not self.config.sections():
             self.logger.critical("No Config Loaded, Exiting")
+            self.config.readfp(open(self._configTemplate))
             self.die()
 
     def _writeConfig(self):

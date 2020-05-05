@@ -5,8 +5,8 @@
 FROM python:2.7.17-buster
 
 RUN pip install paho-mqtt
-COPY llap-mqtt-bridge.py /usr/local/bin/llap-mqtt-bridge.py
+COPY mqtt-publisher.py /usr/local/bin/mqtt-publisher.py
 
 EXPOSE 50140/udp
 
-CMD ["/usr/local/bin/llap-mqtt-bridge.py"]
+CMD ["/usr/local/bin/mqtt-publisher.py"]
