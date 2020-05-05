@@ -2,27 +2,51 @@ Back in 2016, I ordered a number of wireless temperature sensors and a single US
 
 ### Components
 
-#### srd-bridge
-What I have called the srd-bridge is in the original software called the MessageBridge, part of the LaunchPad. All of MessageBridge has been copied into this repository, and is as of early 2020 unchanged from the original repository. I've externalized the configuration file, so you can edit this even after building the image. Log files are also externalized.
+#### srf-stick-receiver
+What I have called the srf-stick-receiver is in the original software called the MessageBridge, part of the LaunchPad. All of MessageBridge has been copied into this repository, and is as of early 2020 unchanged from the original repository. I've externalized the configuration file, so you can edit this even after building the image. Log files are also externalized.
 
-#### llap-mqtt-bridge
+#### mqtt-publisher
 A more developed version of [simpleUDPListen.py](https://github.com/WirelessThings/WirelessThings-LaunchPad/blob/master/Examples/Python%20CLI/simpleUDPListen.py) from the original software is included. Read and edit the settings to suit your environment. At this point the configuration is not externalized and so baked into the image you build below.
 
 ### Installation
 
 Edit the `MessageBridge.cfg` file to have the right setting for your serial port. For me, this is `/dev/ttyACM0`. If this is a different port for you, make sure to edit the `docker run` command listed below to have the same device mapped to inside the container.
 
-In both directories, run
+In the `srf-stick-receiver` directory, run
 ```
-docker build .
+docker build . -t "srf-stick-receiver"
 ```
 
-Then, run
+And in the `mqtt-publisher` directory, run
 ```
-docker run --name srd-bridge --device /dev/ttyACM0:/dev/ttyACM0 -v /usr/share/srd-bridge/config:/config -v /usr/share/srd-bridge/logs:/logs  -d -it srd-bridge
+docker build . -t "mqtt-publisher"
+```
 
-docker run --name llap-mqtt-bridge -p 50140:50140/udp  -d -it llap-mqtt-bridge
+Then, start the `mqtt-publisher` component
 ```
+docker run  -d -it \
+            --name mqtt-publisher \
+            -p 50140:50140/udp \
+            mqtt-publisher
+```
+and the `srf-stick-receiver` component
+```
+docker run -d -it \
+           --name srf-stick-receiver \
+           --device /dev/ttyACM0:/dev/ttyACM0 \
+           -v /usr/share/srf-stick-receiver/config:/config \
+           -v /usr/share/srf-stick-receiver/logs:/logs \
+           srd-bridge 
+```
+
+Please note that upon it's first start, `stf-stick-receiver` will die with the following message
+```
+2020-05-05 07:02:26,535 - Message Bridge - CRITICAL - No Config Loaded, Exiting
+2020-05-05 07:02:26,552 - Message Bridge - CRITICAL - DIE
+```
+If you start it a second time (or if it is started a second time), it will have written a template configuration file into `/config` and should then work. If not, feel free to open the file to adjust settings as they should be. 
+
+The serial port for my device is `/dev/ttyACM0` and I assume this will be the same for you. If not, change to the appropriate port in the above command and run. Do not forget to edit the configuration file accordingly. 
 
 ### License
 
