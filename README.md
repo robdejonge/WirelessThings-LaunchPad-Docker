@@ -14,29 +14,29 @@ Edit the `MessageBridge.cfg` file to have the right setting for your serial port
 
 In the `srf-stick-receiver` directory, run
 ```
-docker build . -t "srf-stick-receiver"
+docker build -t "robdejonge/srf-stick-receiver" .
 ```
 
 And in the `mqtt-publisher` directory, run
 ```
-docker build . -t "mqtt-publisher"
+docker build -t "robdejonge/mqtt-publisher" .
 ```
 
 Then, start the `mqtt-publisher` component
 ```
-docker run  -d -it \
+docker run  --detach \
             --name mqtt-publisher \
             -p 50140:50140/udp \
-            mqtt-publisher
+            robdejonge/mqtt-publisher
 ```
 and the `srf-stick-receiver` component
 ```
-docker run -d -it \
+docker run --detach \
            --name srf-stick-receiver \
            --device /dev/ttyACM0:/dev/ttyACM0 \
            -v /usr/share/srf-stick-receiver/config:/config \
            -v /usr/share/srf-stick-receiver/logs:/logs \
-           srd-bridge 
+           robdejonge/srf-stick-receiver 
 ```
 
 Please note that upon it's first start, `stf-stick-receiver` will die with the following message
