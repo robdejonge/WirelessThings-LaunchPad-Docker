@@ -27,6 +27,7 @@ Then, start the `mqtt-publisher` component
 docker run  --detach \
             --name mqtt-publisher \
             -p 50140:50140/udp \
+            -e PYTHONUNBUFFERED=0 \
             robdejonge/mqtt-publisher
 ```
 and the `srf-stick-receiver` component
